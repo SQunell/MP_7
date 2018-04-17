@@ -16,9 +16,9 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONElement;
-import org.json.JSONParser;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * Main class for our UI design lab.
@@ -42,6 +42,8 @@ public final class MainActivity extends AppCompatActivity {
      *
      * @param savedInstanceState unused
      */
+
+    private static String latest;
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,15 +53,16 @@ public final class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         final Button refresh = findViewById(R.id.Refresh);
+        final TextView temp = findViewById(R.id.Temp);
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 Log.d(TAG, "Refresh button clicked");
                 startAPICall();
+                temp.setText(tempParse(latest));
             }
         });
-        final TextView temp = findViewById(R.id.Temp);
-        temp.setText();
+
 
         startAPICall();
     }
@@ -87,6 +90,7 @@ public final class MainActivity extends AppCompatActivity {
                         public void onResponse(final JSONObject response) {
                             try {
                                 Log.d(TAG, response.toString(2));
+                                latest = response.toString();
                             } catch (JSONException ignored) { }
                         }
                     }, new Response.ErrorListener() {
