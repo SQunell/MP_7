@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">Lab 12</string>
+    <string name="app_name">Kewl App</string>
+    <string name="picture_from_gallery">Picture from Gallery</string>
+    <string name="take_picture">Take Picture</string>
+    <string name="photo_or_food">Photo or Food</string>
+    <string name="face_or_food">Face_or_Food</string>
+    <string name="take_photo">Take Photo</string>
 </resources>

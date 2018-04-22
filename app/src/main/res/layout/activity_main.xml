@@ -2,20 +2,88 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="194dp">
+
+        <ImageView
+            android:id="@+id/Image"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#a5afef"
+            android:contentDescription="@string/face_or_food"
+            android:scaleType="fitCenter"
+            android:visibility="invisible"
+            app:srcCompat="@android:drawable/star_off" />
+
+    </FrameLayout>
+
     <Button
-        android:id="@+id/Refresh"
+        android:id="@+id/Photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Refresh Me owo" />
+        android:background="#ace932"
+        android:text="@string/take_photo" />
+
+    <Button
+        android:id="@+id/Import"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ace932"
+        android:text="@string/picture_from_gallery" />
+
+    <Button
+        android:id="@+id/Submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#2acbd9"
+        android:text="Use"
+        android:visibility="invisible" />
 
     <TextView
-        android:id="@+id/Temp"
+        android:id="@+id/Recommend"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_height="59dp"
+        android:text="TextView"
+        android:visibility="invisible" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/Redo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#2acbd9"
+            android:text="New Photo"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/Yes"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#ace932"
+            android:text="Explore"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/Refood"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#2acbd9"
+            android:text="New Food"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+
 </LinearLayout>
