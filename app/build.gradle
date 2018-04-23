@@ -13,7 +13,7 @@ def getApiKey() {
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "edu.illinois.cs.cs125.MP_7"
+        applicationId "edu.illinois.cs.cs125.SQunell_MP_7"
         minSdkVersion 15
         targetSdkVersion 27
         versionCode 1
