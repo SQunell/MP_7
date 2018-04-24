@@ -49,6 +49,12 @@ public final class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "On Activity Result Ran");
 
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            pic.setImageBitmap(imageBitmap);
+        }
+
 
       /*  if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
             Log.d(TAG, "Selected image is about to be placed.");
@@ -57,10 +63,10 @@ public final class MainActivity extends AppCompatActivity {
             pic.setImageBitmap(imageBitmap);
         } */
 
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
-            return;
+     /*   if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
+
             // Let's read picked image data - its URI
-          /*  Uri pickedImage = data.getData();
+           Uri pickedImage = data.getData();
             // Let's read picked image path using content resolver
             String[] filePath = { MediaStore.Images.Media.DATA };
             Cursor cursor = getContentResolver().query(pickedImage, filePath, null, null, null);
@@ -71,16 +77,10 @@ public final class MainActivity extends AppCompatActivity {
             pic.setImageBitmap(BitmapFactory.decodeFile(imagePath));
 
             // At the end remember to close the cursor or you will end with the RuntimeException!
-            cursor.close(); */
-        }
+            cursor.close();
+        } */
 
 
-
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            pic.setImageBitmap(imageBitmap);
-        }
 
     }
 
@@ -129,7 +129,7 @@ public final class MainActivity extends AppCompatActivity {
             public void onClick(final View v) {
                 Log.d(TAG, "Import photo button clicked");
                 //IMPORT PHOTO METHOD
-
+/*
                 Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 getIntent.setType("image/*");
 
@@ -140,7 +140,7 @@ public final class MainActivity extends AppCompatActivity {
                 chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
 
                 startActivityForResult(chooserIntent, PICK_IMAGE);
-                Log.d(TAG, "Import photo button finished");
+                Log.d(TAG, "Import photo button finished"); */
             }
         });
 
