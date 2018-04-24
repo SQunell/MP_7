@@ -258,8 +258,8 @@ public final class MainActivity extends AppCompatActivity {
         try {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
-                    "http://api.openweathermap.org/data/2.5/weather?zip=61820,us&appid="
-                            + BuildConfig.API_KEY,
+                    "https://westcentralus.api.cognitive.microsoft.com/face/v1.0"
+                            + BuildConfig.API_KEY1,
                     null,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -285,8 +285,8 @@ public final class MainActivity extends AppCompatActivity {
         try {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
-                    "http://api.openweathermap.org/data/2.5/weather?zip=61820,us&appid="
-                            + BuildConfig.API_KEY,
+                    "https://api.eatstreet.com/publicapi/v1"
+                            + BuildConfig.API_KEY2,
                     null,
                     new Response.Listener<JSONObject>() {
                         @Override
