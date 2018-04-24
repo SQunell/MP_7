@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Kewl App</string>
+    <string name="app_name">Food Picker</string>
     <string name="picture_from_gallery">Picture from Gallery</string>
     <string name="take_picture">Take Picture</string>
     <string name="photo_or_food">Photo or Food</string>
