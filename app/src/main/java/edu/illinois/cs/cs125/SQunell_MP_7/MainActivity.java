@@ -1,6 +1,9 @@
 package edu.illinois.cs.cs125.SQunell_MP_7;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,6 +35,8 @@ public final class MainActivity extends AppCompatActivity {
      */
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    public static final int PICK_IMAGE = 1;
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -42,12 +47,45 @@ public final class MainActivity extends AppCompatActivity {
    //Sets the image view to the photo that was just taken
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "On Activity Result Ran");
+
+
+      /*  if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+            Log.d(TAG, "Selected image is about to be placed.");
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            pic.setImageBitmap(imageBitmap);
+        } */
+
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null) {
+            return;
+            // Let's read picked image data - its URI
+          /*  Uri pickedImage = data.getData();
+            // Let's read picked image path using content resolver
+            String[] filePath = { MediaStore.Images.Media.DATA };
+            Cursor cursor = getContentResolver().query(pickedImage, filePath, null, null, null);
+            cursor.moveToFirst();
+            String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+
+            // Now we need to set the GUI ImageView data with data read from the picked file.
+            pic.setImageBitmap(BitmapFactory.decodeFile(imagePath));
+
+            // At the end remember to close the cursor or you will end with the RuntimeException!
+            cursor.close(); */
+        }
+
+
+
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             pic.setImageBitmap(imageBitmap);
         }
+
     }
+
+
+
 
 
 
@@ -91,6 +129,18 @@ public final class MainActivity extends AppCompatActivity {
             public void onClick(final View v) {
                 Log.d(TAG, "Import photo button clicked");
                 //IMPORT PHOTO METHOD
+
+                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                getIntent.setType("image/*");
+
+                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickIntent.setType("image/*");
+
+                Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+
+                startActivityForResult(chooserIntent, PICK_IMAGE);
+                Log.d(TAG, "Import photo button finished");
             }
         });
 
