@@ -227,6 +227,7 @@ public final class MainActivity extends AppCompatActivity {
                 importz.setVisibility(View.INVISIBLE);
                 photo.setVisibility(View.INVISIBLE);
                 submit.setVisibility(View.INVISIBLE);
+                photoAPI();
 
             }
         });
@@ -249,6 +250,11 @@ public final class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+    }
+    /**parse data from face api. */
+    // NEED TO DEAL WITH NOT 1 FACE
+    static String faceParse(final String json) {
+        return null;
     }
 
     /**
