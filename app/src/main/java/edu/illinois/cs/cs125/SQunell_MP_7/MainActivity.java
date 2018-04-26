@@ -20,9 +20,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.Random;
 
 
 /**
@@ -102,6 +106,10 @@ public final class MainActivity extends AppCompatActivity {
 
     /** Default logging tag for messages from the main activity. */
     private static final String TAG = "MP_7:";
+    /** current emotion. */
+    String emotion;
+    /**current food. */
+    String food;
 
     /** Request queue for our API requests. */
     private static RequestQueue requestQueue;
@@ -149,17 +157,10 @@ public final class MainActivity extends AppCompatActivity {
         newfood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Log.d(TAG, "New food button clicked");
-                //NEW FOOD METHOD
-                if (counter % 2 == 0) {
-                    recs.setText("Emotion: Sadness    Recommended Food: Mac and Cheese");
-                } else {
-                    recs.setText("Emotion: Sadness    Recommended Food: Ice Cream");
-                }
-                counter++;
+                emoto(emotion);
             }
         });
-
+        //Still need to figure out what this even gonna do
         final Button restaurant = findViewById(R.id.Explore);
         restaurant.setVisibility(View.INVISIBLE);
         restaurant.setOnClickListener(new View.OnClickListener() {
@@ -191,8 +192,6 @@ public final class MainActivity extends AppCompatActivity {
                 photo.setVisibility(View.VISIBLE);
                 submit.setVisibility(View.INVISIBLE);
                 pic.setVisibility(View.INVISIBLE);
-                recs.setText("Emotion: Sadness    Recommended Food: Ice Cream");
-                counter = 0;
             }
         });
 
@@ -220,13 +219,6 @@ public final class MainActivity extends AppCompatActivity {
             public void onClick(final View v) {
                 Log.d(TAG, "Submit photo button clicked");
                 //ANALYZE PHOTO METHOD
-                newfood.setVisibility(View.VISIBLE);
-                restaurant.setVisibility(View.VISIBLE);
-                redo.setVisibility(View.VISIBLE);
-                recs.setVisibility(View.VISIBLE);
-                importz.setVisibility(View.INVISIBLE);
-                photo.setVisibility(View.INVISIBLE);
-                submit.setVisibility(View.INVISIBLE);
                 photoAPI();
 
             }
@@ -252,9 +244,114 @@ public final class MainActivity extends AppCompatActivity {
         super.onPause();
     }
     /**parse data from face api. */
-    // NEED TO DEAL WITH NOT 1 FACE
-    static String faceParse(final String json) {
-        return null;
+    // not tested
+    void faceParse(final String json) {
+        JsonParser parser = new JsonParser();
+        try {
+            JsonArray peepz = parser.parse(json).getAsJsonArray();
+            if (peepz.size() == 0 ) {
+                recs.setText("Sorry, we need a clear photo of a human face.");
+                return;
+            } else if (peepz.size() > 1) {
+                recs.setText("Please submit a photo of just one face.");
+                return;
+            } else {
+                JsonObject emotions = peepz.get(0).getAsJsonObject().getAsJsonObject("faceAttributes")
+                        .getAsJsonObject("emotion");
+                double anger = emotions.get("anger").getAsDouble();
+                double contempt = emotions.get("contempt").getAsDouble();
+                double disgust = emotions.get("disgust").getAsDouble();
+                double fear = emotions.get("fear").getAsDouble();
+                double happiness = emotions.get("happiness").getAsDouble();
+                double neutral = emotions.get("neutral").getAsDouble();
+                double sadness = emotions.get("sadness").getAsDouble();
+                double surprise = emotions.get("surprise").getAsDouble();
+                double biggest = Math.max(Math.max(Math.max(Math.max(Math.max(Math.max(Math.max(anger,contempt),disgust),fear),happiness),neutral),sadness),surprise);
+                String finalemot;
+                if (anger == biggest) {
+                    finalemot = "anger";
+                    //Intentionally merging contempt and disgust
+                } else if (contempt == biggest) {
+                    finalemot = "disgust";
+                } else if (disgust == biggest) {
+                    finalemot = "disgust";
+                } else if (fear == biggest) {
+                    finalemot = "fear";
+                } else if (happiness == biggest) {
+                    finalemot = "happiness";
+                } else if (neutral == biggest) {
+                    finalemot = "neutral";
+                } else if (sadness == biggest) {
+                    finalemot = "sadness";
+                } else {
+                    //Intentionally merging fear and surprise
+                    finalemot = "fear";
+                }
+                emoto(finalemot);
+                //not sure why these visibilities are flagging checkstyle
+                newfood.setVisibility(View.VISIBLE);
+                restaurant.setVisibility(View.VISIBLE);
+                redo.setVisibility(View.VISIBLE);
+                recs.setVisibility(View.VISIBLE);
+                importz.setVisibility(View.INVISIBLE);
+                photo.setVisibility(View.INVISIBLE);
+                submit.setVisibility(View.INVISIBLE);
+            }
+        } catch (Exception e) {
+            recs.setText("We really didn't like that image. Git gud.");
+        }
+    }
+
+    /** set emotion. needs actual foods */
+    void emoto(final String emotionk) {
+        String newfood = new String(food);
+        emotion = emotionk;
+        Random index = new Random();
+        if (emotionk.equals("anger")) {
+            String[] foodz = {"anger1", "anger2"};
+            while(newfood.equals(food)) {
+                newfood = foodz[index.nextInt(foodz.length)];
+            }
+            recs.setText("We detected anger. You could use something soothing to calm you down. " +
+                    "Perhaps some " + newfood+" will quell your rage.");
+        } else if(emotionk.equals("disgust")) {
+            String[] foodz = {"disgust1", "disgust2"};
+            while(newfood.equals(food)) {
+                newfood = foodz[index.nextInt(foodz.length)];
+            }
+            recs.setText("We detected disgust. Perhaps something fancy will satisfy? " +
+                    "We suggest " + newfood+".");
+        } else if(emotionk.equals("fear")) {
+            String[] foodz = {"fear1", "fear2"};
+            while(newfood.equals(food)) {
+                newfood = foodz[index.nextInt(foodz.length)];
+            }
+            recs.setText("We detected fear. Something simple could help you relax. " +
+                    "Chill out for a bit with some " + newfood+"!");
+
+        } else if(emotionk.equals("neutral")) {
+            String[] foodz = {"neutral1", "neutral2"};
+            while(newfood.equals(food)) {
+                newfood = foodz[index.nextInt(foodz.length)];
+            }
+            recs.setText("We didn't detect much emotion. Something new and exciting could spice up your day. " +
+                    "We recommend " + newfood+".");
+        } else if(emotionk.equals("happiness")) {
+            String[] foodz = {"happiness1", "happiness2"};
+            while(newfood.equals(food)) {
+                newfood = foodz[index.nextInt(foodz.length)];
+            }
+            recs.setText("We detected happiness. If it ain't broke, don't fix it! " +
+                    "Classic " + newfood+" certainly won't hurt your mood.");
+        } else {
+            String[] foodz = {"sadness1", "sadness2"};
+            while(newfood.equals(food)) {
+                newfood = foodz[index.nextInt(foodz.length)];
+            }
+            recs.setText("We detected sadness. Something sweet would perk you up! " +
+                    "We bet you'd love some " + newfood+"!");
+        }
+        food = newfood;
     }
 
     /**
@@ -273,6 +370,7 @@ public final class MainActivity extends AppCompatActivity {
                             try {
                                 Log.d(TAG, response.toString(2));
                                 latest = response.toString();
+                                faceParse(latest);
                             } catch (JSONException ignored) { }
                         }
                     }, new Response.ErrorListener() {
