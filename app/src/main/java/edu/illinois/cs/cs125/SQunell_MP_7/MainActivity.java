@@ -99,6 +99,10 @@ public final class MainActivity extends AppCompatActivity {
     Button submit;
     Button photo;
     TextView recs;
+    Button newfood;
+    Button redo;
+    Button importz;
+    Button restaurant;
 
     //Temporary variable- Just used to switch between two preset recommended food options
     int counter;
@@ -130,7 +134,7 @@ public final class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        final Button importz = findViewById(R.id.Import);
+        importz = findViewById(R.id.Import);
         importz.setVisibility(View.VISIBLE);
         importz.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,7 +156,7 @@ public final class MainActivity extends AppCompatActivity {
             }
         });
 
-        final Button newfood = findViewById(R.id.Refood);
+        newfood = findViewById(R.id.Refood);
         newfood.setVisibility(View.INVISIBLE);
         newfood.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +165,7 @@ public final class MainActivity extends AppCompatActivity {
             }
         });
         //Still need to figure out what this even gonna do
-        final Button restaurant = findViewById(R.id.Explore);
+        restaurant = findViewById(R.id.Explore);
         restaurant.setVisibility(View.INVISIBLE);
         restaurant.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,7 +180,7 @@ public final class MainActivity extends AppCompatActivity {
             }
         });
 
-        final Button redo = findViewById(R.id.Redo);
+        redo = findViewById(R.id.Redo);
         redo.setVisibility(View.INVISIBLE);
         redo.setOnClickListener(new View.OnClickListener() {
             @Override
