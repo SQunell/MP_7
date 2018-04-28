@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.illinois.cs.cs125.SQunell_MP_7">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
 
     <application
         android:allowBackup="true"
@@ -26,5 +24,7 @@
 
     <uses-feature android:name="android.hardware.camera"
         android:required="true" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

@@ -1,8 +1,12 @@
 package edu.illinois.cs.cs125.SQunell_MP_7;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -48,6 +52,9 @@ public final class MainActivity extends AppCompatActivity {
      * Opens up the camera to take a picture
      */
     static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    private ProgressDialog detectionProgressDialog;
+
 
     public static final int PICK_IMAGE = 1;
 
@@ -117,6 +124,15 @@ public final class MainActivity extends AppCompatActivity {
     Button importz;
     Button restaurant;
 
+    double anger;
+    double contempt;
+    double disgust;
+    double fear;
+    double happiness;
+    double neutral;
+    double sadness;
+    double surprise;
+
     //Temporary variable- Just used to switch between two preset recommended food options
     int counter;
 
@@ -169,12 +185,14 @@ public final class MainActivity extends AppCompatActivity {
             }
         });
 
+        detectionProgressDialog = new ProgressDialog(this);
+
         newfood = findViewById(R.id.Refood);
         newfood.setVisibility(View.INVISIBLE);
         newfood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                emoto(emotion);
+
             }
         });
         //Still need to figure out what this even gonna do
@@ -186,10 +204,12 @@ public final class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "Explore restaurant button clicked");
 
                 if (counter % 2 == 0) {
-                    recs.setText("Recommended Restaurant: Oberweis Dairy");
+                    recs.setText("");
                 } else {
-                    recs.setText("Recommended Restaurant: Noodles & Company");
+                    recs.setText("");
                 }
+
+
             }
         });
 
@@ -223,6 +243,7 @@ public final class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "take photo button clicked");
                 //TAKE PHOTO METHOD
                 dispatchTakePictureIntent();
+                recs.setVisibility(View.INVISIBLE);
                 pic.setVisibility(View.VISIBLE);
                 submit.setVisibility(View.VISIBLE);
 
@@ -236,7 +257,12 @@ public final class MainActivity extends AppCompatActivity {
             public void onClick(final View v) {
                 Log.d(TAG, "Submit photo button clicked");
                 //ANALYZE PHOTO METHOD
+
                 detectAndFrame(imageBitmap);
+                submit.setVisibility(View.INVISIBLE);
+
+               // emoto(emotion);
+                recs.setVisibility(View.VISIBLE);
 
             }
         });
@@ -374,7 +400,7 @@ public final class MainActivity extends AppCompatActivity {
     /**
      * Make a call to the face API. NOT COMPLETE
      */
-    void photoAPI() {
+    /*void photoAPI() {
         try {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
@@ -400,15 +426,37 @@ public final class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    } */
+
+    private static Bitmap drawFaceRectanglesOnBitmap(Bitmap originalBitmap, Face[] faces) {
+        Bitmap bitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setColor(Color.GREEN);
+        int stokeWidth = 3;
+        paint.setStrokeWidth(stokeWidth);
+        if (faces != null) {
+            for (Face face : faces) {
+                FaceRectangle faceRectangle = face.faceRectangle;
+                canvas.drawRect(
+                        faceRectangle.left,
+                        faceRectangle.top,
+                        faceRectangle.left + faceRectangle.width,
+                        faceRectangle.top + faceRectangle.height,
+                        paint);
+            }
+        }
+        return bitmap;
     }
-
-
 
     // Detect faces by uploading face images
     // Frame faces after detection
 
     private void detectAndFrame(final Bitmap imageBitmap)
     {
+        Log.d(TAG, "DETECT AND FRAME STARTING");
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         ByteArrayInputStream inputStream =
@@ -423,38 +471,108 @@ public final class MainActivity extends AppCompatActivity {
                                     params[0],
                                     true,         // returnFaceId
                                     false,        // returnFaceLandmarks
-                                    null           // returnFaceAttributes: a string like "age, gender"
+                                    new FaceServiceClient.FaceAttributeType[]{FaceServiceClient.FaceAttributeType.Emotion}           // returnFaceAttributes: a string like "age, gender"
                             );
                             if (result == null)
                             {
                                 publishProgress("Detection Finished. Nothing detected");
+                                Log.d(TAG, "NOTHING DETECTED");
                                 return null;
                             }
                             publishProgress(
                                     String.format("Detection Finished. %d face(s) detected",
                                             result.length));
+                                Log.d(TAG, "DETECTION WORKED");
+                                Log.d(TAG, "The number of faces is " + String.valueOf(result.length));
+                                Log.d(TAG, "Anger is " + String.valueOf(result[0].faceAttributes.emotion.anger));
+                                Log.d(TAG, "Contempt is " + String.valueOf(result[0].faceAttributes.emotion.contempt));
+                                Log.d(TAG, "Disgust is " + String.valueOf(result[0].faceAttributes.emotion.disgust));
+                                Log.d(TAG, "Fear is " + String.valueOf(result[0].faceAttributes.emotion.fear));
+                                Log.d(TAG, "Happiness is " + String.valueOf(result[0].faceAttributes.emotion.happiness));
+                            Log.d(TAG, "Neutral is " + String.valueOf(result[0].faceAttributes.emotion.neutral));
+                            Log.d(TAG, "Sadness is " + String.valueOf(result[0].faceAttributes.emotion.sadness));
+                            Log.d(TAG, "Surprise is " + String.valueOf(result[0].faceAttributes.emotion.surprise));
+                            anger = result[0].faceAttributes.emotion.anger;
+                            contempt = result[0].faceAttributes.emotion.contempt;
+                            disgust = result[0].faceAttributes.emotion.disgust;
+                            fear = result[0].faceAttributes.emotion.fear;
+                            happiness = result[0].faceAttributes.emotion.happiness;
+                            neutral = result[0].faceAttributes.emotion.neutral;
+                            sadness = result[0].faceAttributes.emotion.sadness;
+                            surprise = result[0].faceAttributes.emotion.surprise;
+
+                            //Decides which emotion is present
+
+                            String currentEmotion = "anger";
+                            double currentEmotionValue = anger;
+
+                            if (contempt > currentEmotionValue) {
+                                currentEmotion = "contempt";
+                                currentEmotionValue = contempt;
+                            }
+
+                            if (disgust > currentEmotionValue) {
+                                currentEmotion = "disgust";
+                                currentEmotionValue = disgust;
+                            }
+
+                            if (fear > currentEmotionValue) {
+                                currentEmotion = "fear";
+                                currentEmotionValue = fear;
+                            }
+
+                            if (happiness > currentEmotionValue) {
+                                currentEmotion = "happiness";
+                                currentEmotionValue = happiness;
+                            }
+
+                            if (neutral > currentEmotionValue) {
+                                currentEmotion = "neutral";
+                                currentEmotionValue = neutral;
+                            }
+
+                            if (sadness > currentEmotionValue) {
+                                currentEmotion = "sadness";
+                                currentEmotionValue = sadness;
+                            }
+
+                            if (surprise > currentEmotionValue) {
+                                currentEmotion = "surprise";
+                                currentEmotionValue = surprise;
+                            }
+
+                            recs.setText("You are experiencing " + currentEmotion + "!");
+
+                         //   emoto(currentEmotion);
+
+
+
                             return result;
                         } catch (Exception e) {
+
+                            Log.d(TAG, "DETECTION RAN BUT DIDN'T WORK" + e);
                             publishProgress("Detection failed");
                             return null;
                         }
                     }
                     @Override
                     protected void onPreExecute() {
-                        //TODO: show progress dialog
+                        detectionProgressDialog.show();
                     }
                     @Override
                     protected void onProgressUpdate(String... progress) {
-                        //TODO: update progress
+                        detectionProgressDialog.setMessage(progress[0]);
                     }
                     @Override
                     protected void onPostExecute(Face[] result) {
-                        //TODO: update face frames
+                        detectionProgressDialog.dismiss();
+                        if (result == null) return;
+                        pic.setImageBitmap(drawFaceRectanglesOnBitmap(imageBitmap, result));
+                        imageBitmap.recycle();
                     }
                 };
         detectTask.execute(inputStream);
     }
-
 
 
 

@@ -50,7 +50,6 @@
         android:layout_width="match_parent"
         android:layout_height="59dp"
         android:gravity="center"
-        android:text="Emotion: Sadness    Recommended Food: Ice Cream"
         android:textSize="13sp"
         android:visibility="visible"
         app:fontFamily="@font/alfa_slab_one" />
