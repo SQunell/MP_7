@@ -543,7 +543,8 @@ public final class MainActivity extends AppCompatActivity {
 
                             recs.setText("You are experiencing " + currentEmotion + "!");
 
-                         //   emoto(currentEmotion);
+
+                            //emoto(currentEmotion);
 
 
 
