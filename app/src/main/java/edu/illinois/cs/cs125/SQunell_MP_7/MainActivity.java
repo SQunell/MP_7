@@ -142,7 +142,7 @@ public final class MainActivity extends AppCompatActivity {
     /** current emotion. */
     String emotion;
     /**current food. */
-    String food;
+    String food = "PAIN";
 
     /** Request queue for our API requests. */
     private static RequestQueue requestQueue;
@@ -192,6 +192,7 @@ public final class MainActivity extends AppCompatActivity {
         newfood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                emoto(emotion);
 
             }
         });
@@ -259,10 +260,6 @@ public final class MainActivity extends AppCompatActivity {
                 //ANALYZE PHOTO METHOD
 
                 detectAndFrame(imageBitmap);
-                submit.setVisibility(View.INVISIBLE);
-
-               // emoto(emotion);
-                recs.setVisibility(View.VISIBLE);
 
             }
         });
@@ -288,7 +285,7 @@ public final class MainActivity extends AppCompatActivity {
     }
     /**parse data from face api. */
     // not tested
-    void faceParse(final String json) {
+    /**void faceParse(final String json) {
         JsonParser parser = new JsonParser();
         try {
             JsonArray peepz = parser.parse(json).getAsJsonArray();
@@ -344,7 +341,7 @@ public final class MainActivity extends AppCompatActivity {
             recs.setText("We really didn't like that image. Git gud.");
         }
     }
-
+**/
     /** set emotion. needs actual foods */
     void emoto(final String emotionk) {
         String newfood = new String(food);
@@ -540,13 +537,23 @@ public final class MainActivity extends AppCompatActivity {
                                 currentEmotion = "surprise";
                                 currentEmotionValue = surprise;
                             }
-
-                            recs.setText("You are experiencing " + currentEmotion + "!");
-
-
-                            //emoto(currentEmotion);
-
-
+                            Log.d(TAG,currentEmotion);
+                            final String finalemo = currentEmotion;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    emotion = finalemo;
+                                    Log.d(TAG, emotion);
+                                    emoto(emotion);
+                                    submit.setVisibility(View.INVISIBLE);
+                                    recs.setVisibility(View.VISIBLE);
+                                    newfood.setVisibility(View.VISIBLE);
+                                    restaurant.setVisibility(View.VISIBLE);
+                                    redo.setVisibility(View.VISIBLE);
+                                    importz.setVisibility(View.INVISIBLE);
+                                    photo.setVisibility(View.INVISIBLE);
+                                }
+                            });
 
                             return result;
                         } catch (Exception e) {
