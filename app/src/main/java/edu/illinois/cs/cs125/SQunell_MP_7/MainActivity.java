@@ -12,12 +12,14 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.text.method.MovementMethod;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -144,6 +146,7 @@ public final class MainActivity extends AppCompatActivity {
     /**current food. */
     String food = "PAIN";
 
+
     /** Request queue for our API requests. */
     private static RequestQueue requestQueue;
 
@@ -203,14 +206,7 @@ public final class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(final View v) {
                 Log.d(TAG, "Explore restaurant button clicked");
-
-                if (counter % 2 == 0) {
-                    recs.setText("");
-                } else {
-                    recs.setText("");
-                }
-
-
+                foodAPI();
             }
         });
 
@@ -235,6 +231,7 @@ public final class MainActivity extends AppCompatActivity {
 
         recs = findViewById(R.id.Recommend);
         recs.setVisibility(View.INVISIBLE);
+        recs.setMovementMethod(new ScrollingMovementMethod());
 
         photo = findViewById(R.id.Photo);
         photo.setVisibility(View.VISIBLE);
@@ -347,22 +344,15 @@ public final class MainActivity extends AppCompatActivity {
         String newfood = new String(food);
         emotion = emotionk;
         Random index = new Random();
-        if (emotionk.equals("anger")) {
-            String[] foodz = {"anger1", "anger2"};
+        if (emotionk.equals("anger") || emotionk.equals("disgust") || emotionk.equals("contempt")) {
+            String[] foodz = {"ice cream", "cookies", "cake"};
             while(newfood.equals(food)) {
                 newfood = foodz[index.nextInt(foodz.length)];
             }
-            recs.setText("We detected anger. You could use something soothing to calm you down. " +
+            recs.setText("We detected anger. You could use something sweet to calm you down. " +
                     "Perhaps some " + newfood+" will quell your rage.");
-        } else if(emotionk.equals("disgust")) {
-            String[] foodz = {"disgust1", "disgust2"};
-            while(newfood.equals(food)) {
-                newfood = foodz[index.nextInt(foodz.length)];
-            }
-            recs.setText("We detected disgust. Perhaps something fancy will satisfy? " +
-                    "We suggest " + newfood+".");
-        } else if(emotionk.equals("fear")) {
-            String[] foodz = {"fear1", "fear2"};
+        } else if(emotionk.equals("fear") || emotionk.equals("surprise")) {
+            String[] foodz = {"pizza", "tacos"};
             while(newfood.equals(food)) {
                 newfood = foodz[index.nextInt(foodz.length)];
             }
@@ -370,25 +360,25 @@ public final class MainActivity extends AppCompatActivity {
                     "Chill out for a bit with some " + newfood+"!");
 
         } else if(emotionk.equals("neutral")) {
-            String[] foodz = {"neutral1", "neutral2"};
+            String[] foodz = {"Chinese", "Italian"};
             while(newfood.equals(food)) {
                 newfood = foodz[index.nextInt(foodz.length)];
             }
             recs.setText("We didn't detect much emotion. Something new and exciting could spice up your day. " +
                     "We recommend " + newfood+".");
         } else if(emotionk.equals("happiness")) {
-            String[] foodz = {"happiness1", "happiness2"};
+            String[] foodz = {"sandwiches", "burgers"};
             while(newfood.equals(food)) {
                 newfood = foodz[index.nextInt(foodz.length)];
             }
             recs.setText("We detected happiness. If it ain't broke, don't fix it! " +
                     "Classic " + newfood+" certainly won't hurt your mood.");
         } else {
-            String[] foodz = {"sadness1", "sadness2"};
+            String[] foodz = {"tea", "coffee"};
             while(newfood.equals(food)) {
                 newfood = foodz[index.nextInt(foodz.length)];
             }
-            recs.setText("We detected sadness. Something sweet would perk you up! " +
+            recs.setText("We detected sadness. Something soothing would perk you up! " +
                     "We bet you'd love some " + newfood+"!");
         }
         food = newfood;
@@ -424,6 +414,23 @@ public final class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     } */
+    /** parses restaurant data and updates text. */
+    void restauranter(final String json) {
+        JsonParser parser = new JsonParser();
+        JsonArray restaurants = parser.parse(json).getAsJsonObject().getAsJsonArray("restaurants");
+        String reco = "Here are some suggestions:\n";
+        for (int i = 0; i < restaurants.size(); i++) {
+            JsonObject thisrest = restaurants.get(i).getAsJsonObject();
+            String name = thisrest.get("name").getAsString();
+            String address = thisrest.get("streetAddress").getAsString();
+            reco += "Name: " + name + "\n";
+            reco += "Address: " + address + "\n\n";
+            if (i == 4) {
+                break;
+            }
+        }
+        recs.setText(reco);
+    }
 
     private static Bitmap drawFaceRectanglesOnBitmap(Bitmap originalBitmap, Face[] faces) {
         Bitmap bitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -589,8 +596,9 @@ public final class MainActivity extends AppCompatActivity {
         try {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
-                    "https://api.eatstreet.com/publicapi/v1"
-                            + BuildConfig.API_KEY2,
+                    "https://api.eatstreet.com/publicapi/v1/restaurant/search?method=both"
+                            + "&access-token="+BuildConfig.API_KEY2+"&search="
+                            +food+"&street-address=1202+S.+1st.+St.,+Champaign,+IL",
                     null,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -598,6 +606,7 @@ public final class MainActivity extends AppCompatActivity {
                             try {
                                 Log.d(TAG, response.toString(2));
                                 latest = response.toString();
+                                restauranter(latest);
                             } catch (JSONException ignored) { }
                         }
                     }, new Response.ErrorListener() {

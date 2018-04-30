@@ -52,7 +52,8 @@
         android:gravity="center"
         android:textSize="13sp"
         android:visibility="visible"
-        app:fontFamily="@font/alfa_slab_one" />
+        app:fontFamily="@font/alfa_slab_one"
+        tools:background="#f4fc5e" />
 
     <LinearLayout
         android:layout_width="match_parent"
