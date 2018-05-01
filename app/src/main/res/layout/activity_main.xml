@@ -31,13 +31,6 @@
         android:text="@string/take_photo" />
 
     <Button
-        android:id="@+id/Import"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ace932"
-        android:text="@string/picture_from_gallery" />
-
-    <Button
         android:id="@+id/Submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +44,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPostalAddress"
-        android:text="Type address here before exploring"
+        android:text="Current Address"
         android:visibility="invisible" />
 
     <TextView

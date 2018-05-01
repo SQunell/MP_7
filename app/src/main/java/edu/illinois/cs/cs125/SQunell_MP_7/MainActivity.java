@@ -124,7 +124,6 @@ public final class MainActivity extends AppCompatActivity {
     TextView recs;
     Button newfood;
     Button redo;
-    Button importz;
     Button restaurant;
     EditText address;
 
@@ -169,27 +168,7 @@ public final class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        importz = findViewById(R.id.Import);
-        importz.setVisibility(View.VISIBLE);
-        importz.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                Log.d(TAG, "Import photo button clicked");
-                //IMPORT PHOTO METHOD
-/*
-                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                getIntent.setType("image/*");
 
-                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                pickIntent.setType("image/*");
-
-                Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
-
-                startActivityForResult(chooserIntent, PICK_IMAGE);
-                Log.d(TAG, "Import photo button finished"); */
-            }
-        });
 
         detectionProgressDialog = new ProgressDialog(this);
 
@@ -202,14 +181,31 @@ public final class MainActivity extends AppCompatActivity {
 
             }
         });
-        //Still need to figure out what this even gonna do
+
+
         restaurant = findViewById(R.id.Explore);
         restaurant.setVisibility(View.INVISIBLE);
         restaurant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 Log.d(TAG, "Explore restaurant button clicked");
-                foodAPI();
+
+
+                //Converts all spaces that the user entered to pluses so the API can use it
+                String input = address.getText().toString();
+
+                char[] newInput = input.toCharArray();
+
+                for (int i = 0; i < newInput.length; i++){
+                    if (newInput[i] == ' '){
+                        newInput[i] = '+';
+                    }
+                }
+
+                String finalInput = String.valueOf(newInput);
+
+                foodAPI(finalInput);
+
             }
         });
 
@@ -225,7 +221,6 @@ public final class MainActivity extends AppCompatActivity {
                 restaurant.setVisibility(View.INVISIBLE);
                 redo.setVisibility(View.INVISIBLE);
                 recs.setVisibility(View.INVISIBLE);
-                importz.setVisibility(View.VISIBLE);
                 photo.setVisibility(View.VISIBLE);
                 submit.setVisibility(View.INVISIBLE);
                 pic.setVisibility(View.INVISIBLE);
@@ -563,7 +558,6 @@ public final class MainActivity extends AppCompatActivity {
                                     newfood.setVisibility(View.VISIBLE);
                                     restaurant.setVisibility(View.VISIBLE);
                                     redo.setVisibility(View.VISIBLE);
-                                    importz.setVisibility(View.INVISIBLE);
                                     photo.setVisibility(View.INVISIBLE);
                                     address.setVisibility(View.VISIBLE);
                                 }
@@ -599,14 +593,14 @@ public final class MainActivity extends AppCompatActivity {
 
 
     /** Call eatstreet API. NOT COMPLETE **/
-    void foodAPI() {
+    void foodAPI(String userInput) {
         try {
             //yoink current text, format, and add in place of current addresss
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
                     "https://api.eatstreet.com/publicapi/v1/restaurant/search?method=both"
                             + "&access-token="+BuildConfig.API_KEY2+"&search="
-                            +food+"&street-address=1202+S.+1st.+St.,+Champaign,+IL",
+                            +food+"&street-address=" + userInput,
                     null,
                     new Response.Listener<JSONObject>() {
                         @Override
