@@ -601,7 +601,7 @@ public final class MainActivity extends AppCompatActivity {
     /** Call eatstreet API. NOT COMPLETE **/
     void foodAPI() {
         try {
-            //yoink current text, format, and add in place of current address
+            //yoink current text, format, and add in place of current addresss
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
                     "https://api.eatstreet.com/publicapi/v1/restaurant/search?method=both"
