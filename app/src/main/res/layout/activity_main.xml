@@ -45,6 +45,15 @@
         android:text="Generate Recommendation"
         android:visibility="visible" />
 
+    <EditText
+        android:id="@+id/Address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPostalAddress"
+        android:text="Type address here before exploring"
+        android:visibility="invisible" />
+
     <TextView
         android:id="@+id/Recommend"
         android:layout_width="match_parent"

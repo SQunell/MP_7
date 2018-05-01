@@ -16,6 +16,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -125,6 +126,7 @@ public final class MainActivity extends AppCompatActivity {
     Button redo;
     Button importz;
     Button restaurant;
+    EditText address;
 
     double anger;
     double contempt;
@@ -134,6 +136,7 @@ public final class MainActivity extends AppCompatActivity {
     double neutral;
     double sadness;
     double surprise;
+    String currentaddress = "201 N Goodwin Ave, Urbana, IL 61801";
 
     //Temporary variable- Just used to switch between two preset recommended food options
     int counter;
@@ -226,6 +229,7 @@ public final class MainActivity extends AppCompatActivity {
                 photo.setVisibility(View.VISIBLE);
                 submit.setVisibility(View.INVISIBLE);
                 pic.setVisibility(View.INVISIBLE);
+                address.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -247,6 +251,8 @@ public final class MainActivity extends AppCompatActivity {
 
             }
         });
+        address = findViewById(R.id.Address);
+        address.setVisibility(View.INVISIBLE);
 
         submit = findViewById(R.id.Submit);
         submit.setVisibility(View.INVISIBLE);
@@ -559,6 +565,7 @@ public final class MainActivity extends AppCompatActivity {
                                     redo.setVisibility(View.VISIBLE);
                                     importz.setVisibility(View.INVISIBLE);
                                     photo.setVisibility(View.INVISIBLE);
+                                    address.setVisibility(View.VISIBLE);
                                 }
                             });
 
@@ -594,6 +601,7 @@ public final class MainActivity extends AppCompatActivity {
     /** Call eatstreet API. NOT COMPLETE **/
     void foodAPI() {
         try {
+            //yoink current text, format, and add in place of current addresss
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
                     "https://api.eatstreet.com/publicapi/v1/restaurant/search?method=both"
