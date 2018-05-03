@@ -43,8 +43,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="Current Address"
         android:inputType="textPostalAddress"
-        android:text="Current Address"
         android:visibility="invisible" />
 
     <TextView

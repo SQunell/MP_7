@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.text.method.MovementMethod;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -346,14 +348,14 @@ public final class MainActivity extends AppCompatActivity {
         emotion = emotionk;
         Random index = new Random();
         if (emotionk.equals("anger") || emotionk.equals("disgust") || emotionk.equals("contempt")) {
-            String[] foodz = {"ice cream", "cookies", "cake"};
+            String[] foodz = {"ice cream", "cookies", "cake", "pie", "chocolate"};
             while(newfood.equals(food)) {
                 newfood = foodz[index.nextInt(foodz.length)];
             }
             recs.setText("We detected anger. You could use something sweet to calm you down. " +
                     "Perhaps some " + newfood+" will quell your rage.");
         } else if(emotionk.equals("fear") || emotionk.equals("surprise")) {
-            String[] foodz = {"pizza", "tacos"};
+            String[] foodz = {"pizza", "tacos", "pasta", "bread", "chicken", "rice"};
             while(newfood.equals(food)) {
                 newfood = foodz[index.nextInt(foodz.length)];
             }
@@ -361,21 +363,21 @@ public final class MainActivity extends AppCompatActivity {
                     "Chill out for a bit with some " + newfood+"!");
 
         } else if(emotionk.equals("neutral")) {
-            String[] foodz = {"Chinese", "Italian"};
+            String[] foodz = {"Chinese", "Italian", "Korean", "Indian", "Greek", "Mexican", "Polish"};
             while(newfood.equals(food)) {
                 newfood = foodz[index.nextInt(foodz.length)];
             }
             recs.setText("We didn't detect much emotion. Something new and exciting could spice up your day. " +
-                    "We recommend " + newfood+".");
+                    "We recommend " + newfood+" cuisine.");
         } else if(emotionk.equals("happiness")) {
-            String[] foodz = {"sandwiches", "burgers"};
+            String[] foodz = {"sandwich", "burger", "salad", "hot dog"};
             while(newfood.equals(food)) {
                 newfood = foodz[index.nextInt(foodz.length)];
             }
             recs.setText("We detected happiness. If it ain't broke, don't fix it! " +
-                    "Classic " + newfood+" certainly won't hurt your mood.");
+                    "A classic " + newfood+" certainly won't hurt your mood.");
         } else {
-            String[] foodz = {"tea", "coffee"};
+            String[] foodz = {"tea", "coffee", "soup", };
             while(newfood.equals(food)) {
                 newfood = foodz[index.nextInt(foodz.length)];
             }
@@ -489,6 +491,29 @@ public final class MainActivity extends AppCompatActivity {
                                             result.length));
                                 Log.d(TAG, "DETECTION WORKED");
                                 Log.d(TAG, "The number of faces is " + String.valueOf(result.length));
+
+                                if (result.length == 0) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getApplicationContext(),"No face was found. Please try again.",Toast.LENGTH_LONG).show();
+                                           // recs.setVisibility(View.VISIBLE);
+                                            //recs.setText("No face detected. Please try again.");
+                                        }
+                                    });
+
+
+                                }
+
+                    /*            Log.d(TAG, "ABOUT TO TOAST");
+                                Looper.prepare();
+                            Toast.makeText(getApplicationContext(),"No faces found. Please try again.",Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "DONE WITH TOASTING"); */
+
+
+
+
+
                                 Log.d(TAG, "Anger is " + String.valueOf(result[0].faceAttributes.emotion.anger));
                                 Log.d(TAG, "Contempt is " + String.valueOf(result[0].faceAttributes.emotion.contempt));
                                 Log.d(TAG, "Disgust is " + String.valueOf(result[0].faceAttributes.emotion.disgust));
